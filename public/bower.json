@@ -1,0 +1,30 @@
+{
+  "name": "altoids",
+  "version": "0.0.0",
+  "authors": [
+    "Piyush Jadhav <piyush.jadhav@nyu.edu>"
+  ],
+  "description": "Event Sharing App",
+  "main": "index.js",
+  "keywords": [
+    "event",
+    "sharing",
+    "upvote",
+    "downvote"
+  ],
+  "license": "MIT",
+  "homepage": "http://altoids.elasticbeanstalk.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.5.5",
+    "core-scaffold": "Polymer/core-scaffold#~0.5.5",
+    "paper-tabs": "Polymer/paper-tabs#~0.5.5",
+    "font-roboto": "Polymer/font-roboto#~0.5.5"
+  }
+}

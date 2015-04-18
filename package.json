@@ -1,0 +1,29 @@
+{
+  "name": "altoids",
+  "version": "1.0.0",
+  "description": "Event Sharing App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": " <Piyush Jadhav>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.12.3",
+    "morgan": "^1.5.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shashankg08/Altoids.git"
+  },
+  "keywords": [
+    "Event",
+    "Sharing",
+    "Application"
+  ],
+  "bugs": {
+    "url": "https://github.com/shashankg08/Altoids/issues"
+  },
+  "homepage": "https://github.com/shashankg08/Altoids"
+}
