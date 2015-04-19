@@ -1,34 +1,120 @@
 <<!DOCTYPE html>
 <html>
 <head>
+ <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
 <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
 <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="bower_components/core-item/core-item.html">
+<link rel="import" href="bower_components/core-menu/core-menu.html">
+<link rel="import" href="bower_components/font-roboto/roboto.html">
+<link rel="import" href="bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="elements/event-element.html">
+
 <title>Altoids !</title>
+
+    <style>
+
+    @font-face{
+    	font-family: "Pacifico";
+    	src:url('fonts/Pacifico.ttf')
+    }
+    	paper-tabs {
+      background-color: #00bcd4;
+      color: #fff;
+      box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    core-toolbar {
+      background-color: #C0C0C0 ;
+      color: #fff;
+      box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
+    }
+
+        body {
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      margin: 0;
+      padding: 24px;
+      color: #333;
+    }
+
+      core-header-panel {
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch; 
+  }
+
+     #tabs {
+    width: 100%;
+    margin: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+	text-transform: uppercase;
+  }
+
+    paper-fab.blue {
+      background: #5677fc;
+    }
+
+    </style>
 </head>
-<body>
+<body unresolved>
 <core-scaffold>
   <core-header-panel navigation flex mode="seamed">
-    <core-toolbar>Altoids</core-toolbar>
-    <core-menu theme="core-light-theme">
-      <core-item icon="settings" label="item1"></core-item>
-      <core-item icon="settings" label="item2"></core-item>
-    </core-menu>
-  </core-header-panel>
-  <div tool>Events</div>
-  <div>
+    <core-toolbar class='tall' style = 'background-color : #526E9C;color:#fff;'>
+    <span style = 'font-family : Pacifico ; font-size:200%'> Altoids </span>
   	
-  	<paper-tabs selected="0" class="transparent-teal">
+    </core-toolbar>
+    <core-menu>
+      <core-item icon="account-circle" label="About Me"></core-item>
+      <core-item icon="favorite" label="Interests"></core-item>
+      <core-item icon='room' label='Set My Location'></core-item>
+      <core-item icon='event' label='My Events'></core-item>
+      <core-item icon='settings' label='Settings'></core-item>
+    </core-menu>
+
+  </core-header-panel>
   
-    <paper-tab>ITEM ONE</paper-tab>
-    <paper-tab>ITEM TWO</paper-tab>
-    <paper-tab>ITEM THREE</paper-tab>
+  	<paper-tabs id='tabs'selected="0">
+  
+    	<paper-tab>Near me</paper-tab>
+
+    	<paper-tab>Recent</paper-tab>
+   		 <paper-tab>Popular</paper-tab>
     
   </paper-tabs>
-
+  
+  <div tool horizontal layout>
+   <span  id='cdiv'> Altoids </span> 
+   <paper-icon-button class='fade-on-drawer-open' icon='search' role='button' tabindex='0' aria-label='search' style='position:absolute;right:10px'> </paper-icon-button>
   </div>
+ 
+
+    <event-element user = 'Sowmya' heading = 'Dances classes at NYU!!' location ='Manhattan, NYU', content = 'Free Dance classes at NYU. Ends 4/25'> </event-element>
+    <event-element user = 'Piyush' heading = 'Dances classes at NYU!!' location ='Manhattan, NYU', content = 'Free Dance classes at NYU. Ends 4/25'> </event-element>
+  <paper-fab  style='position:absolute;right:20px;bottom:30px'icon="add" class="blue" title="create">  </paper-fab>
+
 </core-scaffold>
 
+
+<script>
+var tabs = document.querySelector('paper-tabs');
+
+
+tabs.addEventListener('core-select', function() {
+
+      if(tabs.selected == 0)
+      	document.getElementById('cdiv').innerHTML = 'Near Me';
+      else if( tabs.selected == 1)
+      	document.getElementById('cdiv').innerHTML = 'Recent';
+      else
+      	document.getElementById('cdiv').innerHTML = 'Popular';
+
+  
+});
+</script>
 
 </body>
 </html>

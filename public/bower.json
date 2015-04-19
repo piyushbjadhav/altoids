@@ -25,6 +25,10 @@
     "polymer": "Polymer/polymer#~0.5.5",
     "core-scaffold": "Polymer/core-scaffold#~0.5.5",
     "paper-tabs": "Polymer/paper-tabs#~0.5.5",
-    "font-roboto": "Polymer/font-roboto#~0.5.5"
+    "font-roboto": "Polymer/font-roboto#~0.5.5",
+    "core-menu": "Polymer/core-menu#~0.5.5",
+    "core-item": "Polymer/core-item#~0.5.5",
+    "paper-icon-button": "Polymer/paper-icon-button#~0.5.5",
+    "paper-fab": "Polymer/paper-fab#~0.5.5"
   }
 }

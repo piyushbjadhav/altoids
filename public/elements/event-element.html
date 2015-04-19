@@ -1,0 +1,88 @@
+<script src="../bower_components/time-elements/time-elements.js"></script>
+<polymer-element name="event-element" attributes="heading background user location upvote downvote content topic">
+<template>
+<style>
+:host {
+display: block;
+position: relative;
+width: 100%;
+border-bottom: 1px solid #e0e0e0;
+font-size: 16px;
+min-height: 300px;
+z-index: 0;
+}
+.user-list {
+padding: 16px;
+}
+
+.status {
+position: absolute;
+bottom: -3px;
+right: -3px;
+border-radius: 50%;
+width: 14px;
+height: 14px;
+background-color: #7EDF25;
+display: none;
+}
+.status.online {
+display: block;
+}
+.username {
+text-transform: capitalize;
+font-weight: 500;
+color: #919191;
+line-height: 1.3em;
+max-width: 90%;
+text-overflow: ellipsis;
+overflow: hidden;
+white-space: nowrap;
+}
+.timestamp {
+font-size: 0.75em;
+color: #919191;
+}
+
+}
+
+paper-fab.red {
+      background: #ff0000;
+    }
+
+    paper-fab.green {
+      background: #00cc33;
+    }
+</style>
+<section class="user-list" layout horizontal center>
+<div flex layout horizontal>
+
+<div flex >{{location}}</div>
+<div flex class="user">Posted by {{user}}</div>
+</div>
+
+
+<div layout horizontal center>
+ <paper-fab  style='position:absolute;left:10px;bottom:10px' icon="thumb-down" class="red" title="create">  </paper-fab>
+ <paper-fab  style='position:absolute;right:10px;bottom:10px' icon="thumb-up" class="green" title="create">  </paper-fab>
+</div>
+<br><br><br>
+<div center>{{heading}}</div>
+<div center class="text">{{content}}</div>
+
+
+<time class="timestamp" is="relative-time" datetime="{{timestamp}}"></time>
+</section>
+</template>
+<script>
+Polymer('event-element', {
+heading: '',
+background: '',
+user: '',
+location: '',
+upvote: '',
+downvote: '',
+content: '',
+topic: '',
+timestamp: new Date().toISOString(),
+});
+</script>
