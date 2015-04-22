@@ -6,13 +6,19 @@
 display: block;
 position: relative;
 width: 100%;
-border-bottom: 1px solid #e0e0e0;
+border-bottom: 1.5px solid #e0e0e0;
 font-size: 16px;
-min-height: 300px;
 z-index: 0;
+min-height: 250px;
+
 }
 .user-list {
 padding: 16px;
+color: white;
+font-weight: bold;
+max-width: 100%;
+min-height: 250px;
+
 }
 
 .status {
@@ -28,15 +34,16 @@ display: none;
 .status.online {
 display: block;
 }
-.username {
+.user {
 text-transform: capitalize;
 font-weight: 500;
-color: #919191;
+color: #ffffff;
 line-height: 1.3em;
 max-width: 90%;
 text-overflow: ellipsis;
 overflow: hidden;
 white-space: nowrap;
+text-align: center;
 }
 .timestamp {
 font-size: 0.75em;
@@ -44,33 +51,22 @@ color: #919191;
 }
 
 }
-
-paper-fab.red {
-      background: #ff0000;
-    }
-
-    paper-fab.green {
-      background: #00cc33;
-    }
+  paper-fab.pink
+  {
+    background-color: #CC6699;
+  }
+    
 </style>
-<section class="user-list" layout horizontal center>
-<div flex layout horizontal>
+<section class="user-list" layout horizontal center style ='background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)) ,url({{background}}) center'>
+  
+  <div style='position:absolute;top:10px'class= "user"> Posted by {{user}}</div> 
+  <div style ='position:absolute;top:80px;left:30%'>{{heading}}</div> 
+  <div style ='position:absolute;top:125px;left:30%' class="text">{{content}}</div>
 
-<div flex >{{location}}</div>
-<div flex class="user">Posted by {{user}}</div>
-</div>
+  <paper-icon-button icon='room' role='button' aria-label='location' style='position:absolute;left:5px;bottom:15px'> </paper-icon-button>
+  <span style='position:absolute;left:37px;bottom:23px' class = "user">{{location}}</span>
+  <paper-fab  style='position:absolute;right:10px;top:15px' icon="thumb-up" class="pink" title="create">  </paper-fa>
 
-
-<div layout horizontal center>
- <paper-fab  style='position:absolute;left:10px;bottom:10px' icon="thumb-down" class="red" title="create">  </paper-fab>
- <paper-fab  style='position:absolute;right:10px;bottom:10px' icon="thumb-up" class="green" title="create">  </paper-fab>
-</div>
-<br><br><br>
-<div center>{{heading}}</div>
-<div center class="text">{{content}}</div>
-
-
-<time class="timestamp" is="relative-time" datetime="{{timestamp}}"></time>
 </section>
 </template>
 <script>

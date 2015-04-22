@@ -9,22 +9,59 @@
 <link rel="import" href="bower_components/core-menu/core-menu.html">
 <link rel="import" href="bower_components/font-roboto/roboto.html">
 <link rel="import" href="bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="bower_components/core-pages/core-pages.html">
 <link rel="import" href="elements/event-element.html">
+ <link rel="import" href="elements/swipeable-card.html">
 
 <title>Altoids !</title>
 
     <style>
 
+
+    #cards {
+      margin: 0 auto;
+      background: #eee;
+      overflow: auto;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+    }
+    
+    swipeable-card {
+      height: 250px;
+      margin: 20px auto;
+      padding: 30px;
+    }
     @font-face{
     	font-family: "Pacifico";
     	src:url('fonts/Pacifico.ttf')
     }
+
+    
+      paper-tabs {
+      background-color: #00bcd4;
+      color: #fff;
+      font-weight: bolder;
+      box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
+    }
+
+      paper-tabs /deep/ #ink {
+    color: #3366ff;
+  }
+
+        paper-tabs /deep/ #selectionBar {
+    color: blue;
+  }
     	paper-tabs {
       background-color: #00bcd4;
       color: #fff;
       box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
+
     }
 
+      paper-tabs paper-tabs::shadow #ink
+      {
+        color: black;
+      }
     core-toolbar {
       background-color: #C0C0C0 ;
       color: #fff;
@@ -63,8 +100,8 @@
 <body unresolved>
 <core-scaffold>
   <core-header-panel navigation flex mode="seamed">
-    <core-toolbar class='tall' style = 'background-color : #526E9C;color:#fff;'>
-    <span style = 'font-family : Pacifico ; font-size:200%'> Altoids </span>
+    <core-toolbar class='tall' style = 'background-color : #526E9C;color:#fff; height:250px'>
+    <span style = 'font-family : Pacifico ; font-size:200%'> &nbsp;&nbsp;&nbsp;Altoids </span>
   	
     </core-toolbar>
     <core-menu>
@@ -87,20 +124,29 @@
   </paper-tabs>
   
   <div tool horizontal layout>
-   <span  id='cdiv'> Altoids </span> 
+   <span id='cdiv'> Altoids </span> 
    <paper-icon-button class='fade-on-drawer-open' icon='search' role='button' tabindex='0' aria-label='search' style='position:absolute;right:10px'> </paper-icon-button>
+   
   </div>
- 
 
-    <event-element user = 'Sowmya' heading = 'Dances classes at NYU!!' location ='Manhattan, NYU', content = 'Free Dance classes at NYU. Ends 4/25'> </event-element>
-
-  <paper-fab  style='position:absolute;right:20px;bottom:30px'icon="add" class="blue" title="create">  </paper-fab>
+    <core-pages id="first" class='fancy'selected="0">
+ <div id='cards'>
+   <swipeable-card>
+  Swipe ME!
+  </swipeable-card>
+  <swipeable-card disableSwipe></swipeable-card>
+  </div>
+  <div>Two</div>
+  <div>Three</div>
+</core-pages>
+  <paper-fab  style='position:fixed;right:10px;bottom:30px'icon="add" class="blue" title="create">  </paper-fab>
 
 </core-scaffold>
 
 
 <script>
 var tabs = document.querySelector('paper-tabs');
+var pages = document.querySelector('core-pages');
 
 
 tabs.addEventListener('core-select', function() {
@@ -112,7 +158,11 @@ tabs.addEventListener('core-select', function() {
       else
       	document.getElementById('cdiv').innerHTML = 'Popular';
 
+pages.selected = tabs.selected;
   
+     document.querySelector('#cards').addEventListener('swipeable-card-swipe-away', function(e) {
+      e.target.parentNode.removeChild(e.target);
+    });
 });
 </script>
 
