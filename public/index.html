@@ -1,17 +1,24 @@
 <<!DOCTYPE html>
 <html>
 <head>
- <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+<script src="https://apis.google.com/js/client:platform.js" async defer></script>
 <link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+<link rel="import" href="bower_components/google-signin/google-signin.html">
 <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="bower_components/core-item/core-item.html">
 <link rel="import" href="bower_components/core-menu/core-menu.html">
 <link rel="import" href="bower_components/font-roboto/roboto.html">
 <link rel="import" href="bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="bower_components/core-pages/core-pages.html">
+<link rel="import" href="bower_components/core-label/core-label.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="bower_components/core-image/core-image.html">
+<link rel="import" href="bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="bower_components/facebook-login/facebook-login.html">
 <link rel="import" href="elements/event-element.html">
- <link rel="import" href="elements/swipeable-card.html">
 
 <title>Altoids !</title>
 
@@ -98,26 +105,50 @@
     </style>
 </head>
 <body unresolved>
+
+
+
+<template id='t' is="auto-binding">
+
+<core-ajax id='ca'
+    auto
+    url="/events"
+    handleAs="json"
+    response="{{events}}">
+</core-ajax>
+
+
 <core-scaffold>
   <core-header-panel navigation flex mode="seamed">
     <core-toolbar class='tall' style = 'background-color : #526E9C;color:#fff; height:250px'>
     <span style = 'font-family : Pacifico ; font-size:200%'> &nbsp;&nbsp;&nbsp;Altoids </span>
+    
+    <core-image style = 'position:absolute;top:60px;left:20px'src="{{user.profile}}"></core-image>
+  
+    <div style = 'position:absolute;top:220px;left:40px'>
+    <span >{{user.name}}</span>
+    </div>
   	
     </core-toolbar>
     <core-menu>
-      <core-item icon="account-circle" label="About Me"></core-item>
-      <core-item icon="favorite" label="Interests"></core-item>
+      <core-item icon="account-circle" label="About Me" onclick="document.getElementById('ca').url='/events2';"></core-item>
+      <core-item icon="favorite" label="Interests" onclick="document.getElementById('dialog2').toggle()"></core-item>
       <core-item icon='room' label='Set My Location'></core-item>
       <core-item icon='event' label='My Events'></core-item>
       <core-item icon='settings' label='Settings'></core-item>
+
+      <p><google-signin clientId="33470002493-fm6jngbcjhe9lal0g1d4e964020p43ve.apps.googleusercontent.com" scopes="profile" on-google-signin-success="{{onSigninSuccess}}"
+      on-google-signin-failure="{{onSigninFailure}}" on-google-signed-out="{{onSignedOut}}"></google-signin></p>
+
+      <facebook-login appID='1582312715378239' on-facebook-signin-success = "{{facebookSignin}}" graphURL='/me' graphResponse='{{fbresponse}}'></facebook-login>
+
     </core-menu>
 
   </core-header-panel>
 
-  	<paper-tabs id='tabs'selected="0">
+  	<paper-tabs position='absolute' id='tabs'selected="0">
   
     	<paper-tab>Near me</paper-tab>
-
     	<paper-tab>Recent</paper-tab>
    		 <paper-tab>Popular</paper-tab>
     
@@ -130,25 +161,77 @@
   </div>
 
     <core-pages id="first" class='fancy'selected="0">
- <div id='cards'>
-   <swipeable-card>
-  Swipe ME!
-  </swipeable-card>
-  <swipeable-card disableSwipe></swipeable-card>
+ <div>
+   <event-element user='piyush' heading='Coldplay Concert' content='Coldplay summer concert !!!' location='Barclays Center' background='dance.jpg'></event-element>
+   <event-element heading='Avengers' content='Screening at AMC Empire 25' location='New York' background='movie.jpg'></event-element>
+   <event-element heading='Avici in New York' content='Enjoy EDM Music' location='Madison Square Garden' background='dance.gif'></event-element>
+   </div>
+  <div>
+   
+   <event-element heading='Avici in New York' content='Enjoy EDM Music' location='Madison Square Garden' background='dance.gif'></event-element>
+   <event-element heading='Coldplay Concert' content='Coldplay summer concert !!!' location='Barclays Center' background='dance.jpg'></event-element>
+
+
   </div>
-  <div>Two</div>
-  <div>Three</div>
+  <div>
+    
+      <template id='t2' repeat="{{ event in events }}">
+         <event-element user='{{event.user}}' heading='{{event.heading}}' content='{{event.content}}' location='{{event.location}}' background='{{event.background}}'></event-element>
+      </template>
+
+  </div>
 </core-pages>
   <paper-fab  style='position:fixed;right:10px;bottom:30px'icon="add" class="blue" title="create">  </paper-fab>
 
 </core-scaffold>
 
+<paper-dialog id="dialog2" transition='core-transition-center'>
+
+<core-label center horizontal layout >
+<paper-checkbox></paper-checkbox>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<h4>Sports</h4>
+</core-label>
+<br>
+
+<core-label center horizontal layout >
+<paper-checkbox></paper-checkbox>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<h4>Entertainment</h4>
+</core-label>
+<br>
+<core-label center horizontal layout >
+<paper-checkbox></paper-checkbox>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<h4>Music</h4>
+</core-label>
+<br>
+<core-label center horizontal layout >
+<paper-checkbox></paper-checkbox>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<h4>Food and Drinks</h4>
+</core-label>
+<br>
+<core-label center horizontal layout >
+<paper-checkbox></paper-checkbox>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<h4>Parties</h4>
+</core-label>
+<br>
+
+</paper-dialog>
+
+</template>
+
 
 <script>
+
+var template = document.querySelector('#t');
+
+
+template.addEventListener('template-bound', function(e) {
 var tabs = document.querySelector('paper-tabs');
 var pages = document.querySelector('core-pages');
-
-
 tabs.addEventListener('core-select', function() {
 
       if(tabs.selected == 0)
@@ -158,12 +241,67 @@ tabs.addEventListener('core-select', function() {
       else
       	document.getElementById('cdiv').innerHTML = 'Popular';
 
+console.log(template.events);
 pages.selected = tabs.selected;
   
-     document.querySelector('#cards').addEventListener('swipeable-card-swipe-away', function(e) {
-      e.target.parentNode.removeChild(e.target);
-    });
+  });
 });
+
+
+template.onSigninFailure = function(e, detail, sender) {
+  if (DEBUG) {
+    return;
+  }
+
+  this.isAuthenticated = false;
+  console.log('Not Authenticated');
+};
+
+template.facebookSignin = function(e, detail, sender) {
+
+ console.log(e.detail);
+
+};
+
+template.onSignedOut = function(e,detail,sender) {
+
+  template.user.name = "";
+  template.user.profile = "";
+
+};
+
+
+
+template.onSigninSuccess = function(e, detail, sender) {
+  this.isAuthenticated = true;
+  console.log('Authenticated');
+    this.gapi = e.detail.gapi;
+    gapi.client.load('plus', 'v1').then(function() {
+
+    // Get user's profile pic, cover image, email, and name.
+    gapi.client.plus.people.get({userId: 'me'}).then(function(resp) {
+      var PROFILE_IMAGE_SIZE = 155;
+      var COVER_IMAGE_SIZE = 315;
+
+      var img = resp.result.image && resp.result.image.url.replace(/(.+)\?sz=\d\d/, "$1?sz=" + PROFILE_IMAGE_SIZE);
+      var coverImg = resp.result.cover && resp.result.cover.coverPhoto.url.replace(/\/s\d{3}-/, "/s" + COVER_IMAGE_SIZE + "-");
+
+      template.user = {
+        name: resp.result.displayName,
+        email: resp.result.emails[0].value,
+        profile: img || null,
+        cover: coverImg || null
+      };
+
+      console.log(template.user.name);
+
+    });
+
+  });
+}
+
+
+    
 </script>
 
 </body>

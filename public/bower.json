@@ -30,6 +30,13 @@
     "core-item": "Polymer/core-item#~0.5.5",
     "paper-icon-button": "Polymer/paper-icon-button#~0.5.5",
     "paper-fab": "Polymer/paper-fab#~0.5.5",
-    "core-pages": "Polymer/core-pages#~0.5.5"
+    "core-pages": "Polymer/core-pages#~0.5.5",
+    "paper-dialog": "Polymer/paper-dialog#~0.5.5",
+    "paper-checkbox": "Polymer/paper-checkbox#~0.5.5",
+    "core-label": "Polymer/core-label#~0.5.5",
+    "google-signin": "~0.3.0",
+    "core-image": "Polymer/core-image#~0.5.5",
+    "core-ajax": "Polymer/core-ajax#~0.5.5",
+    "facebook-login": "*"
   }
 }
