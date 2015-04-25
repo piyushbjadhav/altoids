@@ -59,7 +59,9 @@ color: #919191;
 </style>
 <section class="user-list" layout horizontal center style ='background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)) ,url({{background}}) center'>
   
-  <div style='position:absolute;top:10px'class= "user"> Posted by {{user}}</div> 
+  <div style='position:absolute;top:10px'class= "user"> 
+      <time is="relative-time" datetime="{{timestamp}}"></time>
+  </div> 
   <div style ='position:absolute;top:80px;left:30%'>{{heading}}</div> 
   <div style ='position:absolute;top:125px;left:30%' class="text">{{content}}</div>
 

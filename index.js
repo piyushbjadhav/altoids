@@ -2,69 +2,29 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var logger = require('morgan');
+var eventful = require('eventful-node');
+var client = new eventful.Client('XCQB6Mpg3vXPMFJ7');
 app.use(express.static('public'));
-
 app.use(logger());
 app.get('/events', function (req,res){
-  
-  var ev = [{
-  	user: 'piyush',
-  	heading:'Coldplay Concert',
-  	content:'Coldplay summer concert !!!',
-  	location:'Barclays Center',
-  	background:'dance.jpg'
-  },
-  {
-  	user: 'Sowmya',
-  	heading:'Avengers',
-  	content:'Screening at AMC Empire 25',
-  	location:'Manhattan',
-  	background:'dance.gif'
-  },
-  {
-  	user: 'Ankita',
-  	heading:'Avivi in New York',
-  	content:'Enjoy EDM',
-  	location:'New York',
-  	background:'movie.jpg'
-  }
-];
-
-  console.log('request recieved');
-  res.json(ev);
+	client.searchEvents({ keywords: 'music' }, function(err, data){
+	    if(err){
+	    	return console.error(err);
+	    }
+	    var ev = {};
+	    var evlist = [];  
+	    for(var e in data.search.events.event){
+	  		ev = {
+	  			heading: data.search.events.event[e].title,
+	  		    background: data.search.events.event[e].image.url,
+	  		    location: data.search.events.event[e].region_name,
+	  		    content:data.search.events.event[e].description    
+	  		};
+	  	evlist.push(ev);
+	    }  
+	   res.json(evlist);
+	});
 });
-
-
-
-app.get('/events2', function (req,res){
-  
-  var ev = [{
-  	user: 'piyush',
-  	heading:'Coldplay Concert11111',
-  	content:'Coldplay summer concert !!!',
-  	location:'Barclays Center',
-  	background:'dance.jpg'
-  },
-  {
-  	user: 'Sowmya',
-  	heading:'Avengers11111111',
-  	content:'Screening at AMC Empire 25',
-  	location:'Manhattan',
-  	background:'dance.gif'
-  },
-  {
-  	user: 'Ankita1111111',
-  	heading:'Avivi in New York',
-  	content:'Enjoy EDM',
-  	location:'New York',
-  	background:'movie.jpg'
-  }
-];
-
-  console.log('request recieved');
-  res.json(ev);
-});
-
 http.listen(process.env.PORT || 3000, function(){
   console.log('listening on *:3000');
 });
