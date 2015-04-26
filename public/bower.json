@@ -38,6 +38,8 @@
     "core-image": "Polymer/core-image#~0.5.5",
     "core-ajax": "Polymer/core-ajax#~0.5.5",
     "facebook-login": "*",
-    "time-elements": "~0.4.0"
+    "time-elements": "~0.4.0",
+    "paper-input": "Polymer/paper-input#~0.5.5",
+    "paper-button": "Polymer/paper-button#~0.5.5"
   }
 }

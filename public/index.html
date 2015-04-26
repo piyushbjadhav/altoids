@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
@@ -11,6 +11,7 @@
 <link rel="import" href="bower_components/core-menu/core-menu.html">
 <link rel="import" href="bower_components/font-roboto/roboto.html">
 <link rel="import" href="bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/core-pages/core-pages.html">
 <link rel="import" href="bower_components/core-label/core-label.html">
 <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
@@ -18,6 +19,10 @@
 <link rel="import" href="bower_components/core-image/core-image.html">
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="bower_components/facebook-login/facebook-login.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-input/paper-input-decorator.html">
+
+
 <link rel="import" href="elements/event-element.html">
 
 <title>Altoids !</title>
@@ -102,7 +107,35 @@
       background: #5677fc;
     }
 
+    html /deep/ paper-dialog {
+    width : 70%;
+}
+
+html /deep/ paper-dialog::shadow #scroller {
+
+  width : 100%;
+   
+    
+}
+
+    html /deep/ event-element.preview {
+    width : 90%;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
     </style>
+
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.24.min.js"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+<script type="text/javascript">
+  // See the Configuring section to configure credentials in the SDK
+  AWS.config.update({accessKeyId: 'AKIAJZMXASPXUNRK5V6Q', secretAccessKey: 'YaoIlqVb3htuX7UzlOkJZN5EhJaRTCTmIELgwwy4'});
+
+  // Configure your region
+  AWS.config.region = 'us-east-1';
+</script>
 </head>
 <body unresolved>
 
@@ -181,7 +214,7 @@
 
   </div>
 </core-pages>
-  <paper-fab  style='position:fixed;right:10px;bottom:30px'icon="add" class="blue" title="create">  </paper-fab>
+  <paper-fab  style='position:fixed;right:10px;bottom:30px'icon="add" class="blue" title="create" onclick="document.getElementById('newevent').toggle()">  </paper-fab>
 
 </core-scaffold>
 
@@ -221,6 +254,50 @@
 
 </paper-dialog>
 
+
+<paper-dialog  id="newevent" transition='core-transition-center'>
+
+
+
+  <paper-input-decorator width='100%' label="Whats the Event ?" floatingLabel error="Required !!" class='preview' autoValidate>
+      <input is="core-input" value='{{eventtitle}}'required>
+  </paper-input-decorator>
+
+  <br>
+
+  <paper-input-decorator label="Tell us something more about the event">
+      <paper-autogrow-textarea maxRows='3'>
+        <textarea id="t1" cols='50' maxlength="150" is='core-input'value='{{eventcontent}}'></textarea>
+      </paper-autogrow-textarea>
+      <paper-char-counter class="counter" target="t1"></paper-char-counter>
+    </paper-input-decorator>
+
+  <br>
+
+  <paper-input-decorator width='100%' label="Where is the Event ?" floatingLabel error="Required !!" class='preview' autoValidate>
+      <input is="core-input" value='{{eventlocation}}'required>
+  </paper-input-decorator>
+
+  <input type="file" id="file-chooser" /> 
+<button id="upload-button">Upload to S3</button>
+  <p> Preview</p>
+
+    <event-element class = 'preview' heading='{{eventtitle}}' content='{{eventcontent}}' location='{{eventlocation}}' background='{{eventbackground}}'></event-element>
+
+    <br>
+
+    <div class="g-recaptcha" data-sitekey="6Lfi8QUTAAAAAJlBrz2Kec9HMx-thtBW6YJ21LGk"></div>
+
+    
+
+   
+
+
+
+</paper-dialog>
+
+</template>
+
 </template>
 
 
@@ -245,6 +322,29 @@ console.log(template.events);
 pages.selected = tabs.selected;
   
   });
+
+
+var bucket = new AWS.S3({params: {Bucket: 'altoidsbucket'}});
+ 
+  var fileChooser = document.getElementById('file-chooser');
+  var button = document.getElementById('upload-button');
+  var results = document.getElementById('results');
+  button.addEventListener('click', function() {
+
+    var file = fileChooser.files[0];
+    if (file) {
+
+      var params = {Key: file.name, ContentType: file.type, Body: file};
+      bucket.upload(params, function (err, data) {
+        template.eventbackground = data.Location;
+
+       
+
+      });
+    } else {
+      alert('Nothing to upload.');
+    }
+  }, false);
 });
 
 
@@ -269,6 +369,7 @@ template.onSignedOut = function(e,detail,sender) {
   template.user.profile = "";
 
 };
+
 
 
 
@@ -303,6 +404,8 @@ template.onSigninSuccess = function(e, detail, sender) {
 
     
 </script>
+
+
 
 </body>
 </html>
