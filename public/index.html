@@ -21,8 +21,12 @@
 <link rel="import" href="bower_components/facebook-login/facebook-login.html">
 <link rel="import" href="bower_components/paper-input/paper-input.html">
 <link rel="import" href="bower_components/paper-input/paper-input-decorator.html">
-
-
+<link rel="import" href="bower_components/google-map/google-map.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="bower_components/core-collapse/core-collapse.html" >
+<link rel="import" href="bower_components/paper-item/paper-item.html" >
 <link rel="import" href="elements/event-element.html">
 
 <title>Altoids !</title>
@@ -107,6 +111,11 @@
       background: #5677fc;
     }
 
+      google-map {
+    height: 200px;
+    width:  200px;
+  }
+
     html /deep/ paper-dialog {
     width : 70%;
 }
@@ -118,6 +127,8 @@ html /deep/ paper-dialog::shadow #scroller {
     
 }
 
+
+
     html /deep/ event-element.preview {
     width : 90%;
     margin-left: auto;
@@ -125,20 +136,42 @@ html /deep/ paper-dialog::shadow #scroller {
     
 }
 
-    </style>
+  html /deep/ paper-dropdown-menu {
+      box-sizing: border-box;
+      width: 170px;
+    }
 
+    html /deep/ core-menu {
+      box-sizing: border-box;
+      width: 170px;
+    }
+
+    paper-item {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    html /deep/ core-collapse {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.24.min.js"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
 <script type="text/javascript">
   // See the Configuring section to configure credentials in the SDK
-  AWS.config.update({accessKeyId: 'AKIAJZMXASPXUNRK5V6Q', secretAccessKey: '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'});
+  AWS.config.update({accessKeyId: 'AKIAJLJWTBDEEQGR2WAA', secretAccessKey: 'eca8DXnx2ZXDMoAlhtKNi7tFrmYBJIQYqS85B+vg'});
 
   // Configure your region
   AWS.config.region = 'us-east-1';
 </script>
+
+
 </head>
 <body unresolved>
-
 
 
 <template id='t' is="auto-binding">
@@ -147,9 +180,17 @@ html /deep/ paper-dialog::shadow #scroller {
     auto
     url="/events"
     handleAs="json"
+    method="POST"
     response="{{events}}">
 </core-ajax>
 
+
+<core-ajax id='put'
+    auto
+    url="/putevent"
+    method = "POST"
+    >
+</core-ajax>
 
 <core-scaffold>
   <core-header-panel navigation flex mode="seamed">
@@ -173,7 +214,7 @@ html /deep/ paper-dialog::shadow #scroller {
       <p><google-signin clientId="33470002493-fm6jngbcjhe9lal0g1d4e964020p43ve.apps.googleusercontent.com" scopes="profile" on-google-signin-success="{{onSigninSuccess}}"
       on-google-signin-failure="{{onSigninFailure}}" on-google-signed-out="{{onSignedOut}}"></google-signin></p>
 
-      <facebook-login appID='1582312715378239' on-facebook-signin-success = "{{facebookSignin}}" graphURL='/me' graphResponse='{{fbresponse}}'></facebook-login>
+  
 
     </core-menu>
 
@@ -207,14 +248,15 @@ html /deep/ paper-dialog::shadow #scroller {
 
   </div>
   <div>
-    
+
+  <!--  
       <template id='t2' repeat="{{ event in events }}">
          <event-element user='{{event.user}}' heading='{{event.heading}}' content='{{event.content}}' location='{{event.location}}' background='{{event.background}}'></event-element>
       </template>
-
+   -->
   </div>
 </core-pages>
-  <paper-fab  style='position:fixed;right:10px;bottom:30px'icon="add" class="blue" title="create" onclick="document.getElementById('newevent').toggle()">  </paper-fab>
+  <paper-fab  style='position:fixed;right:20px;bottom:13px'icon="add" class="blue" title="create" onclick="newevent()">  </paper-fab>
 
 </core-scaffold>
 
@@ -280,15 +322,30 @@ html /deep/ paper-dialog::shadow #scroller {
 
   <input type="file" id="file-chooser" /> 
 <button id="upload-button">Upload to S3</button>
+    <input id="address" type="textbox" value="Sydney, NSW">
+      <input type="button" value="Geocode" onclick="codeAddress()">
+      <p id = "geotag"></p>
+
+         <paper-dropdown-menu label="Your favorite pastry">
+        <paper-dropdown class="dropdown">
+          <core-menu class="menu" value="{{eventtype}}">
+            <template repeat="{{interests}}">
+              <paper-item>{{}}</paper-item>
+            </template>
+          </core-menu>
+        </paper-dropdown>
+      </paper-dropdown-menu>
+
   <p> Preview</p>
 
     <event-element class = 'preview' heading='{{eventtitle}}' content='{{eventcontent}}' location='{{eventlocation}}' background='{{eventbackground}}'></event-element>
 
     <br>
-
-    <div class="g-recaptcha" data-sitekey="6Lfi8QUTAAAAAJlBrz2Kec9HMx-thtBW6YJ21LGk"></div>
-
     
+   
+   <!-- <div class="g-recaptcha" data-sitekey="6Lfi8QUTAAAAAJlBrz2Kec9HMx-thtBW6YJ21LGk"></div>-->
+    <br>
+    <paper-button raised  style="background: #4285f4; color: #fff;" id="submitevent">Submit</paper-button>
 
    
 
@@ -304,6 +361,14 @@ html /deep/ paper-dialog::shadow #scroller {
 <script>
 
 var template = document.querySelector('#t');
+
+    template.interests = [
+      'Music',
+      'Sports',
+      'Food'
+  
+    ];
+
 
 
 template.addEventListener('template-bound', function(e) {
@@ -327,8 +392,28 @@ pages.selected = tabs.selected;
 var bucket = new AWS.S3({params: {Bucket: 'altoidsbucket'}});
  
   var fileChooser = document.getElementById('file-chooser');
+  var submitEvent = document.getElementById('submitevent');
   var button = document.getElementById('upload-button');
   var results = document.getElementById('results');
+
+    submitEvent.addEventListener('click', function() {
+
+        var eventjson = {
+          heading: template.eventtitle,
+          content:template.eventcontent,
+          location:template.eventlocation,
+          background:template.eventbackground
+      };
+ 
+    var ajax = document.querySelector("#put");
+    ajax.method = 'POST';
+    ajax.contentType = 'application/json';
+    console.log(eventjson);
+    ajax.body = JSON.stringify(eventjson);
+    ajax.go();
+  }, false);
+
+
   button.addEventListener('click', function() {
 
     var file = fileChooser.files[0];
@@ -403,6 +488,25 @@ template.onSigninSuccess = function(e, detail, sender) {
 
 
     
+function newevent(){
+
+  
+  geocoder = new google.maps.Geocoder();
+  document.getElementById('newevent').toggle();
+
+}
+
+function codeAddress() {
+  var address = document.getElementById('address').value;
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {      
+          document.getElementById("geotag").innerHTML = results[0].geometry.location;
+      
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
 </script>
 
 
