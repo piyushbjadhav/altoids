@@ -215,6 +215,9 @@ html /deep/ paper-dialog::shadow #scroller {
       on-google-signin-failure="{{onSigninFailure}}" on-google-signed-out="{{onSignedOut}}"></google-signin></p>
 
   
+       <p> Location </p>
+       <p> {{currlat}},{{currlon}}</p>
+        <p> {{address}}</p>
 
     </core-menu>
 
@@ -482,6 +485,23 @@ template.onSigninSuccess = function(e, detail, sender) {
       console.log(template.user.name);
 
     });
+
+  });
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+           template.currlat = position.coords.latitude;
+           template.currlon = position.coords.longitude;
+           var point = new google.maps.LatLng(template.currlat, template.currlon);
+
+           var geocoder = new google.maps.Geocoder();
+           geocoder.geocode({latLng: point}, function(results, status) {
+             if (status == google.maps.GeocoderStatus.OK) {
+                if (results[0]) {
+                template.address = results[0].formatted_address;
+           
+                }
+              }
+          });
 
   });
 }
