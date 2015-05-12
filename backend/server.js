@@ -5,7 +5,8 @@ var io = require('socket.io')(http);
 //var kafka = require('kafka-node');
 
 var sendToKafka = require('./sendToKafka.js');
-var events_db = require('./events_db.js')();
+//var events_db = require('./events_db.js')();
+var kafka = require('kafka-node');
 
 /*
 Assume events comes of the form:
@@ -23,28 +24,11 @@ Assume events comes of the form:
 3. start kafka consumer and emit all events.
 4. For client side, get interests from db, emit events only for subscribed events.
 */
-
 // incoming event from front-end:
 
-var myevent ={
-	id: 1,
-	title: "PInk Floyd Gig",
-	description: "Pink Floyd live in NYC 2015",
-	location: "Madison Square Garden, NY",
-	tag: "music",
-	image:"pk.image.com"
-};
 
 
-console.log(" 1. Storing event in db");
-events_db.saveEvent(myevent, function(s){
-	return s;
-});
-
-
-console.log("2. Sending to Kafka");
-//sendToKafka(myevent);
-
+console.log("sent to kafka...");
 
 /*
 io.on('connection', function(req, resp){
@@ -52,10 +36,41 @@ io.on('connection', function(req, resp){
 });
 */
 
-app.get('/events', function(req, resp){
+// Receiving events from Kafka and emitting to browser side;
+var Consumer = kafka.Consumer;
+client = new kafka.Client(),
+consumer = new Consumer(
 	
-	var e = require('./events.js')();
-	resp.send(e.print());
+	client,
+	[{topic: 'events'}]
+	);
+
+consumer.on('message', function(message){
+
+	console.log("Inside consumer....");
+	var messageData = JSON.parse(message.value);
+
+	console.log("Received from Kafka on server side");
+	console.log(messageData.title);
+
+	//console.log(messageData.description);
+
+	// sending to client side;
+	io.emit('eventOn',JSON.stringify(messageData));
+
+});
+
+	io.on('connection', function(socket){
+		console.log("User logged in.");
+	})
+
+app.get('/events', function(req, resp){
+	//var e = require('./events.js')();
+	//resp.send(e.print());
+	resp.sendfile('index.html');
+	var p = require('./postevent.js');
+	p();
+	//io.emit('eventOn', "This is a test for socket.io");
 
 });
 
@@ -66,7 +81,11 @@ http.listen(process.env.PORT || 8000, function(){
 
 
 app.get('/', function(req, res){
-	res.end("** Altoids **");
+	res.sendfile("index.html");
+});
+
+app.get('/js/page.js', function(req, res){
+	res.sendfile("./js/page.js");
 });
 
 /*

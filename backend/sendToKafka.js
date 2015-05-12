@@ -9,7 +9,7 @@ module.exports = function(eventData){
 	producer = new Producer(client),	
 
 	newData = [
-		{topic:eventData.tag, messages: eventData, partition:0},		// creates a topic
+		{topic:'events', messages: eventData, partition:0},		// creates a topic
 	];
 
 	producer.on('ready', function(){
