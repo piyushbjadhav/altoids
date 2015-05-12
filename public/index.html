@@ -327,7 +327,7 @@ html /deep/ paper-dialog::shadow #scroller {
 
   <input type="file" id="file-chooser" /> 
 <button id="upload-button">Upload to S3</button>
-    <input id="address" type="textbox" value="Sydney, NSW">
+    
       <input type="button" value="Geocode" onclick="codeAddress()">
       <p id = "geotag"></p>
 
@@ -337,10 +337,12 @@ html /deep/ paper-dialog::shadow #scroller {
            template.eventlon = 0;
 
       </script>
-      
+      <!--
       <google-map  latitude="{{maplat}}" longitude="{{maplon}}" style="height:300px;width:80%" zoomable = 'false' zoom='13' fitToMarkers='true'>
         <google-map-marker latitude="{{eventlat}}" longitude="{{eventlon}}"></google-map-marker>
       </google-map>
+      -->
+      <img src= 'https://maps.googleapis.com/maps/api/staticmap?center={{eventlocation}}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7Clabel:C%7C{{eventlat}},{{eventlon}}'></img>
          <paper-dropdown-menu label="Your favorite pastry">
         <paper-dropdown class="dropdown">
           <core-menu class="menu" value="{{eventtype}}">
