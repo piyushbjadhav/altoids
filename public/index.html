@@ -15,6 +15,7 @@
 <link rel="import" href="bower_components/core-pages/core-pages.html">
 <link rel="import" href="bower_components/core-label/core-label.html">
 <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-dialog/paper-action-dialog.html">
 <link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="bower_components/core-image/core-image.html">
 <link rel="import" href="bower_components/core-ajax/core-ajax.html">
@@ -117,11 +118,11 @@
     width:  200px;
   }
 
-    html /deep/ paper-dialog {
+    html /deep/ paper-action-dialog {
     width : 70%;
 }
 
-html /deep/ paper-dialog::shadow #scroller {
+html /deep/ paper-action-dialog::shadow #scroller {
 
   width : 100%;
    
@@ -195,14 +196,16 @@ html /deep/ paper-dialog::shadow #scroller {
 
 <core-scaffold>
   <core-header-panel navigation flex mode="seamed">
-    <core-toolbar class='tall' style = 'background-color : #526E9C;color:#fff; height:250px'>
+    <core-toolbar class='tall' style = 'background-color : #526E9C;color:#fff; height:250px;background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)) ,url({{user.cover}});'>
     <span style = 'font-family : Pacifico ; font-size:200%'> &nbsp;&nbsp;&nbsp;Altoids </span>
     
-    <core-image style = 'position:absolute;top:60px;left:20px'src="{{user.profile}}"></core-image>
+    <core-image style = 'position:absolute;top:60px;left:20px;border-radius:200px'src="{{user.profile}}"></core-image>
   
     <div style = 'position:absolute;top:220px;left:40px'>
     <span >{{user.name}}</span>
     </div>
+
+
   	
     </core-toolbar>
     <core-menu>
@@ -225,7 +228,7 @@ html /deep/ paper-dialog::shadow #scroller {
 
   </core-header-panel>
 
-  	<paper-tabs position='absolute' id='tabs'selected="0">
+  	<paper-tabs  id='tabs'selected="0">
   
     	<paper-tab>Near me</paper-tab>
     	<paper-tab>Recent</paper-tab>
@@ -236,7 +239,7 @@ html /deep/ paper-dialog::shadow #scroller {
   <div tool horizontal layout>
    <span id='cdiv'> Altoids </span> 
    <paper-icon-button class='fade-on-drawer-open' icon='search' role='button' tabindex='0' aria-label='search' style='position:absolute;right:10px'> </paper-icon-button>
-   
+
   </div>
 
     <core-pages id="first" class='fancy'selected="0">
@@ -302,17 +305,17 @@ html /deep/ paper-dialog::shadow #scroller {
 </paper-dialog>
 
 
-<paper-dialog  id="newevent" transition='core-transition-center'>
+<paper-action-dialog  id="newevent" transition='core-transition-center' autoCloseDisabled backdrop>
 
 
 
   <paper-input-decorator width='100%' label="Whats the Event ?" floatingLabel error="Required !!" class='preview' autoValidate>
-      <input is="core-input" value='{{eventtitle}}'required>
+      <input is="core-input" value='{{eventtitle}}'required maxlength="70">
   </paper-input-decorator>
 
   <br>
 
-  <paper-input-decorator label="Tell us something more about the event">
+  <paper-input-decorator label="Tell us something more about the event" floatingLabel error="Required !!" class='preview' autoValidate>
       <paper-autogrow-textarea maxRows='3'>
         <textarea id="t1" cols='50' maxlength="150" is='core-input'value='{{eventcontent}}'></textarea>
       </paper-autogrow-textarea>
@@ -322,7 +325,7 @@ html /deep/ paper-dialog::shadow #scroller {
   <br>
 
   <paper-input-decorator width='100%' label="Where is the Event ?" floatingLabel error="Required !!" class='preview' autoValidate>
-      <input is="core-input" value='{{eventlocation}}'required>
+      <input is="core-input" value='{{eventlocation}}'required maxlength="30">
   </paper-input-decorator>
 
   <input type="file" id="file-chooser" /> 
@@ -342,10 +345,11 @@ html /deep/ paper-dialog::shadow #scroller {
         <google-map-marker latitude="{{eventlat}}" longitude="{{eventlon}}"></google-map-marker>
       </google-map>
       -->
-      <img src= 'https://maps.googleapis.com/maps/api/staticmap?center={{eventlocation}}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7Clabel:C%7C{{eventlat}},{{eventlon}}'></img>
-         <paper-dropdown-menu label="Your favorite pastry">
+      <img src= 'https://maps.googleapis.com/maps/api/staticmap?center={{eventlocation}}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7Clabel:C%7C{{eventlat}},{{eventlon}}' ></img>
+      <p>{{interests[eventtype]}}</p>
+         <paper-dropdown-menu label="Event Type" >
         <paper-dropdown class="dropdown">
-          <core-menu class="menu" value="{{eventtype}}">
+          <core-menu class="menu"selected="{{eventtype}}" >
             <template repeat="{{interests}}">
               <paper-item>{{}}</paper-item>
             </template>
@@ -364,13 +368,14 @@ html /deep/ paper-dialog::shadow #scroller {
    
    <!-- <div class="g-recaptcha" data-sitekey="6Lfi8QUTAAAAAJlBrz2Kec9HMx-thtBW6YJ21LGk"></div>-->
     <br>
-    <paper-button raised  style="background: #4285f4; color: #fff;" id="submitevent">Submit</paper-button>
+    <paper-button raised  affirmative style="background: #4285f4; color: #fff;" id="submitevent">Submit</paper-button>
+    <paper-button raised  dismissive style="background: #CC0000; color: #fff;" >cancel</paper-button>
 
    
 
 
 
-</paper-dialog>
+</paper-action-dialog>
 
 </template>
 
@@ -544,6 +549,9 @@ function newevent(){
   document.getElementById('newevent').toggle();
 
 }
+
+
+
 
 function codeAddress() {
   
