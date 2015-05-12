@@ -29,6 +29,7 @@
 <link rel="import" href="bower_components/paper-item/paper-item.html" >
 <link rel="import" href="elements/event-element.html">
 
+
 <title>Altoids !</title>
 
     <style>
@@ -218,6 +219,7 @@ html /deep/ paper-dialog::shadow #scroller {
        <p> Location </p>
        <p> {{currlat}},{{currlon}}</p>
         <p> {{address}}</p>
+        <p>{{color}}</p>
 
     </core-menu>
 
@@ -329,6 +331,16 @@ html /deep/ paper-dialog::shadow #scroller {
       <input type="button" value="Geocode" onclick="codeAddress()">
       <p id = "geotag"></p>
 
+      <script type="text/javascript">
+          var template = document.querySelector('#t');
+           template.eventlat = 0;
+           template.eventlon = 0;
+
+      </script>
+      
+      <google-map  latitude="{{maplat}}" longitude="{{maplon}}" style="height:300px;width:80%" zoomable = 'false' zoom='13' fitToMarkers='true'>
+        <google-map-marker latitude="{{eventlat}}" longitude="{{eventlon}}"></google-map-marker>
+      </google-map>
          <paper-dropdown-menu label="Your favorite pastry">
         <paper-dropdown class="dropdown">
           <core-menu class="menu" value="{{eventtype}}">
@@ -338,6 +350,8 @@ html /deep/ paper-dialog::shadow #scroller {
           </core-menu>
         </paper-dropdown>
       </paper-dropdown-menu>
+
+
 
   <p> Preview</p>
 
@@ -458,10 +472,23 @@ template.onSignedOut = function(e,detail,sender) {
 
 };
 
-
-
+/*
+template.codeAddress = function() {
+  alert('here');
+  var address = this.eventlocation;
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {      
+          this.eventloc = results[0].geometry.location;
+      
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
+*/
 
 template.onSigninSuccess = function(e, detail, sender) {
+
   this.isAuthenticated = true;
   console.log('Authenticated');
     this.gapi = e.detail.gapi;
@@ -517,16 +544,30 @@ function newevent(){
 }
 
 function codeAddress() {
-  var address = document.getElementById('address').value;
+  
+  var address = template.eventlocation;
+
   geocoder.geocode( { 'address': address}, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {      
-          document.getElementById("geotag").innerHTML = results[0].geometry.location;
-      
+          template.eventlat = results[0].geometry.location.A;
+          template.eventlon = results[0].geometry.location.F;
+          template.maplat = template.eventlat;
+          template.maplat = template.eventlat;
+          console.log(template.eventlat + " " + template.eventlon);
+
+          var googlemap = template.content.querySelector('google-map');
+          googlemap.resize();
     } else {
       alert('Geocode was not successful for the following reason: ' + status);
     }
   });
 }
+
+
+
+
+
+
 </script>
 
 
