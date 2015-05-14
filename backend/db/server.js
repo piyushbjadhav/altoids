@@ -1,8 +1,16 @@
 // Server Set up;
-var app = require('express')();
+var app = require('express');
+var express = app();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var moment = require('moment');
+var logger = require('morgan');
+app.use(express.static('public'));
+app.use(logger());
+var bodyParser = require("body-parser");
+//Here we are configuring express to use body-parser as middle-ware.
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 //var kafka = require('kafka-node');
 
 io.on('connection', function(socket){
@@ -12,7 +20,7 @@ io.on('connection', function(socket){
 app.get('/events', function(req, resp){
 	//var e = require('./events.js')();
 	//resp.send(e.print());
-	resp.sendfile('index.html');
+	//resp.sendfile('index.html');
 	var p = require('./post_events.js');
 	p();
 
@@ -82,6 +90,11 @@ app.get('/ajax_getpopular',function(req,res){
 	});
 });
 
+app.post('/putevent',function (req,res){
+
+	console.log(req.body);
+	
+});
 
 app.get('/putdata', function(req, res){
 	res.sendfile('index.html');

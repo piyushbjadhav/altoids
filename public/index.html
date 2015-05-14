@@ -118,7 +118,11 @@
     width:  200px;
   }
 
-    html /deep/ paper-action-dialog {
+    html /deep/ paper-action-dialog.interests {
+    width : 50%;
+}
+
+    html /deep/ paper-action-dialog.newpost {
     width : 70%;
 }
 
@@ -162,10 +166,10 @@ html /deep/ paper-action-dialog::shadow #scroller {
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.24.min.js"></script>
-    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
 <script type="text/javascript">
   // See the Configuring section to configure credentials in the SDK
-  AWS.config.update({accessKeyId: 'AKIAJLJWTBDEEQGR2WAA', secretAccessKey: 'eca8DXnx2ZXDMoAlhtKNi7tFrmYBJIQYqS85B+vg'});
+  AWS.config.update({accessKeyId: '', secretAccessKey: ''});
 
   // Configure your region
   AWS.config.region = 'us-east-1';
@@ -182,15 +186,13 @@ html /deep/ paper-action-dialog::shadow #scroller {
     auto
     url="/events"
     handleAs="json"
-    method="POST"
+    method="GET"
+    params="{{user.email}}"
     response="{{events}}">
 </core-ajax>
 
 
 <core-ajax id='put'
-    auto
-    url="/putevent"
-    method = "POST"
     >
 </core-ajax>
 
@@ -250,62 +252,64 @@ html /deep/ paper-action-dialog::shadow #scroller {
    </div>
   <div>
    
-   <event-element heading='Avici in New York' content='Enjoy EDM Music' location='Madison Square Garden' background='dance.gif'></event-element>
-   <event-element heading='Coldplay Concert' content='Coldplay summer concert !!!' location='Barclays Center' background='dance.jpg'></event-element>
+          <template id='t2' repeat="{{ event in events }}">
+         <event-element user='Shashank' heading='{{event.title}}' content='{{event.description}}' location='{{event.location_str}}' background='{{event.image}}'></event-element>
+      </template>
 
 
   </div>
   <div>
 
-  <!--  
-      <template id='t2' repeat="{{ event in events }}">
-         <event-element user='{{event.user}}' heading='{{event.heading}}' content='{{event.content}}' location='{{event.location}}' background='{{event.background}}'></event-element>
-      </template>
-   -->
+    
+  
+   
   </div>
 </core-pages>
   <paper-fab  style='position:fixed;right:20px;bottom:13px'icon="add" class="blue" title="create" onclick="newevent()">  </paper-fab>
 
 </core-scaffold>
 
-<paper-dialog id="dialog2" transition='core-transition-center'>
+<paper-action-dialog id="dialog2" transition='core-transition-center' class='interests'>
+<div vertical layout  justified >
 
 <core-label center horizontal layout >
 <paper-checkbox></paper-checkbox>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <h4>Sports</h4>
 </core-label>
-<br>
+
 
 <core-label center horizontal layout >
 <paper-checkbox></paper-checkbox>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <h4>Entertainment</h4>
 </core-label>
-<br>
+
 <core-label center horizontal layout >
 <paper-checkbox></paper-checkbox>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <h4>Music</h4>
 </core-label>
-<br>
+
 <core-label center horizontal layout >
 <paper-checkbox></paper-checkbox>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <h4>Food and Drinks</h4>
 </core-label>
-<br>
+
 <core-label center horizontal layout >
 <paper-checkbox></paper-checkbox>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <h4>Parties</h4>
 </core-label>
-<br>
 
-</paper-dialog>
+</div>
+<paper-button raised  affirmative style="background: #4285f4; color: #fff;">Submit</paper-button>
+
+</paper-action-dialog>
 
 
-<paper-action-dialog  id="newevent" transition='core-transition-center' autoCloseDisabled backdrop>
+<paper-action-dialog  id="newevent" transition='core-transition-center' autoCloseDisabled backdrop class='newpost'>
 
 
 
@@ -328,9 +332,18 @@ html /deep/ paper-action-dialog::shadow #scroller {
       <input is="core-input" value='{{eventlocation}}'required maxlength="30">
   </paper-input-decorator>
 
+    <img src= 'https://maps.googleapis.com/maps/api/staticmap?center={{eventlocation}}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7Clabel:C%7C{{eventlat}},{{eventlon}}' ></img>
+
+
+    <paper-input-decorator label="When is the Event ?" floatingLabel error="Required !!" class='preview' autoValidate>
+      <input is="core-input" value='{{eventdate}}'required type="datetime-local">
+  </paper-input-decorator>
+
+  <paper-input-decorator >
   <input type="file" id="file-chooser" /> 
-<button id="upload-button">Upload to S3</button>
-    
+  </paper-input-decorator>
+<paper-button id="upload-button" style="background: #4285f4; color: #fff;" >Upload</paper-button>
+    <br>
       <input type="button" value="Geocode" onclick="codeAddress()">
       <p id = "geotag"></p>
 
@@ -345,7 +358,7 @@ html /deep/ paper-action-dialog::shadow #scroller {
         <google-map-marker latitude="{{eventlat}}" longitude="{{eventlon}}"></google-map-marker>
       </google-map>
       -->
-      <img src= 'https://maps.googleapis.com/maps/api/staticmap?center={{eventlocation}}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7Clabel:C%7C{{eventlat}},{{eventlon}}' ></img>
+      
       <p>{{interests[eventtype]}}</p>
          <paper-dropdown-menu label="Event Type" >
         <paper-dropdown class="dropdown">
@@ -421,15 +434,22 @@ var bucket = new AWS.S3({params: {Bucket: 'altoidsbucket'}});
   var results = document.getElementById('results');
 
     submitEvent.addEventListener('click', function() {
-
+      
         var eventjson = {
           heading: template.eventtitle,
           content:template.eventcontent,
-          location:template.eventlocation,
-          background:template.eventbackground
+          location_str:template.eventlocation,
+          location:[template.eventlat,template.eventlon],
+          tag:template.interests[template.eventtype],
+          background:template.eventbackground,
+          eventdate:template.eventdate,
+          userid:template.user.email
+          
+
       };
  
     var ajax = document.querySelector("#put");
+    ajax.url="/putevent";
     ajax.method = 'POST';
     ajax.contentType = 'application/json';
     console.log(eventjson);
@@ -576,7 +596,13 @@ function codeAddress() {
 
 
 
+var socket = io();
+socket.on('flash_events', function(msg){
+  var ajax1 = document.querySelector("#ca");
+      ajax1.go();
 
+  //template.events.unshift(nevent);
+})
 
 </script>
 
